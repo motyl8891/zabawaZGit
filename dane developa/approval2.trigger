@@ -1,8 +1,9 @@
-trigger approval23 on Invoice__c (after insert, after update) {
-Invoice__c a = trigger.new[0];
-    if(a.Status__c == 'Open'){}
-    if(a.Status__c == 'Pending')
-    {
-        AutomateApprovalRequest2.submitApproval(a.id);
+trigger RestrictInvoiceDeletion on test40__Invoice_Statement__c (before delete) {
+for (Invoice_Statement__c invoice : 
+                    [SELECT Id
+                    FROM Invoice_Statement__c
+                    WHERE Id IN :Trigger.old]){
+        Trigger.oldMap.get(invoice.Id).addError(
+                'Cannot delete invoice statement with line items');
     }
 }
